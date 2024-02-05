@@ -1,0 +1,7 @@
+rpd-plym-splash
+sway 
+swayimg
+jq
+imagemagick
+ffmpeg
+parallel
