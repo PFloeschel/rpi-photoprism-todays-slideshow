@@ -1,0 +1,18 @@
+[Unit]
+Description=swayimg - Slideshow
+Documentation=man:swayimg(5)
+After=sway.service
+Requires=sway.service
+
+[Install]
+WantedBy=default.target
+
+[Service]
+Type=simple
+EnvironmentFile=-%h/.config/swayimg/env
+WorkingDirectory=%h/pp_client/images
+ExecStartPre=/bin/sleep 5
+ExecStart=/usr/bin/swayimg
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=10

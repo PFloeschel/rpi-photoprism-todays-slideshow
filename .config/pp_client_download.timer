@@ -1,0 +1,8 @@
+[Unit]
+Description=Schedule PhotoPrism Download
+
+[Timer]
+OnCalendar=*-*-* 00:01:00
+
+[Install]
+WantedBy=default.target
