@@ -10,7 +10,7 @@ image_date=$5
   echo -e "\nDownloading $count / $length"
   logger -t pp_client "Downloading $count / $length"
 
-  curl -o /tmp/pp_client-$count $base_url_dl$image_dl
+  curl -s -S -o /tmp/pp_client-$count $base_url_dl$image_dl
 
   #format=$(convert /tmp/pp_client-$count json: | jq -r ".[].image.format" | tr '[:upper:]' '[:lower:]')
   format=$(identify -format '%[compression]' /tmp/pp_client-$count  | tr '[:upper:]' '[:lower:]')
