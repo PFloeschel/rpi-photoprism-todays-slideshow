@@ -5,3 +5,4 @@ jq
 imagemagick
 ffmpeg
 parallel
+unattended-upgrades
