@@ -6,3 +6,4 @@ imagemagick
 ffmpeg
 parallel
 unattended-upgrades
+powermgmt-base

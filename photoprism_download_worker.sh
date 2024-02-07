@@ -26,7 +26,7 @@ image_date=$5
     ffmpeg -i /tmp/pp_client-$count -filter_complex "[0:v] palettegen" /tmp/pp_client-$count-palette.png
     ffmpeg -i /tmp/pp_client-$count -i /tmp/pp_client-$count-palette.png -filter_complex "[0:v] fps=10 [new];[new][1:v] paletteuse" /tmp/pp_client-$count-resized.$format
   else
-    convert -monitor -adaptive-resize 1920x1080 /tmp/pp_client-$count /tmp/pp_client-$count-resized.$format
+    convert -adaptive-resize 1920x1080 /tmp/pp_client-$count /tmp/pp_client-$count-resized.$format
   fi
   echo -e "Finished conversion $count / $length"
 
