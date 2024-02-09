@@ -1,4 +1,4 @@
 .github_token
 photoprism_download.env
+photoprism_download.run
 images/
-last_run
