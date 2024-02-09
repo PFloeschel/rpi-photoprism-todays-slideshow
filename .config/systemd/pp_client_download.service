@@ -1,6 +1,6 @@
 [Unit]
 Description=Scheduled PhotoPrism Download
-Conflicts=swayimg.service
+Conflicts=pp_client_img.service
 
 [Install]
 WantedBy=default.target
@@ -9,7 +9,7 @@ WantedBy=default.target
 Type=simple
 WorkingDirectory=%h/pp_client
 ExecStart=%h/pp_client/photoprism_download.sh
-ExecStopPost=systemctl --user start swayimg
+ExecStopPost=systemctl --user start pp_client_img
 Restart=on-failure
 RestartSec=5
 TimeoutStopSec=10

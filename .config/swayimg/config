@@ -1,0 +1,137 @@
+# Swayimg configuration file.
+
+# This file contains the default configuration.
+# The viewer searches for the config file in the following locations:
+# 1. $XDG_CONFIG_HOME/swayimg/config
+# 2. $HOME/.config/swayimg/config
+# 3. $XDG_CONFIG_DIRS/swayimg/config
+# 4. /etc/xdg/swayimg/config
+
+# See `man swayimgrc` for details.
+
+################################################################################
+# General options
+################################################################################
+[general]
+
+# Initial scale (optimal/fit/width/height/fill/real)
+scale = optimal
+
+# Start in full screen mode (yes/no)
+fullscreen = yes
+
+# Anti-aliasing (yes/no)
+antialiasing = no
+
+# Background for transparent images (none/grid/RGB, e.g. #112233)
+transparency = grid
+
+# Window position (parent or absolute coordiantes, e.g. 100,200)
+position = parent
+# Window size (parent, image, or absolute size, e.g. 800,600)
+size = parent
+# Window background mode/color (none/RGB, e.g. #112233)
+background = none
+
+# Run slideshow at startup (yes/no)
+slideshow = yes
+# Slideshow image display time (seconds)
+slideshow_time = 10
+
+################################################################################
+# Image list configuration
+################################################################################
+[list]
+# Default order (none/alpha/random)
+order = alpha
+# Looping list of images (yes/no)
+loop = yes
+# Read directories recursively (yes/no)
+recursive = no
+# Open all files in the start directory (yes/no)
+all = no
+
+################################################################################
+# Font configuration
+################################################################################
+[font]
+# Font name
+name = monospace
+# Font size (in pt)
+size = 22
+# Font color
+#color = #cccccc
+color = #ffcc00
+#color = #ff9999
+
+# Drop shadow (none/RGB, e.g. #112233)
+#shadow = #000000
+#shadow= #cca300
+
+################################################################################
+# Image meta info scheme (format, size, EXIF, etc)
+################################################################################
+[info]
+# Mode on startup (off/brief/full)
+mode = full
+# Display scheme for the "full" mode: position = content
+#full.topleft = name,format,filesize,imagesize,exif
+full.topleft = name
+full.topright = index
+#full.bottomleft = scale,frame
+full.bottomleft = exif
+#full.bottomright = status
+full.bottomright = none
+# Display scheme for the "brief" mode: position = content
+brief.topleft = index
+brief.topright = none
+brief.bottomleft = none
+brief.bottomright = status
+
+################################################################################
+# Key binding section: key = action [parameters]
+# Use the `xkbcli` tool to get key name: `xkbcli interactive-wayland`
+################################################################################
+[keys]
+F1 = help
+#Home = first_file
+#End = last_file
+#Prior = prev_file
+#Next = next_file
+#space = next_file
+Up = first_file
+Down = last_file
+Left = prev_file
+Right = next_file
+#D = prev_dir
+#d = next_dir
+#O = prev_frame
+#o = next_frame
+S = slideshow
+#s = animation
+#f = fullscreen
+#Left = step_left 10
+#Right = step_right 10
+#Up = step_up 10
+#Down = step_down 10
+#equal = zoom +10
+#plus = zoom +10
+#minus = zoom -10
+#w = zoom width
+#W = zoom height
+#z = zoom fit
+#Z = zoom fill
+#0 = zoom real
+#BackSpace = zoom optimal
+#bracketleft = rotate_left
+#bracketright = rotate_right
+#m = flip_vertical
+#M = flip_horizontal
+#a = antialiasing
+r = reload
+i = info
+#e = exec echo "Image: %"
+Escape = exit
+q = exit
+
+# vim: filetype=dosini
