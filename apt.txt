@@ -1,3 +1,4 @@
+[install]
 rpd-plym-splash
 sway 
 swayimg
@@ -8,3 +9,7 @@ parallel
 webp
 unattended-upgrades
 powermgmt-base
+
+[purge]
+avahi-daemon
+

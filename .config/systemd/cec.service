@@ -1,0 +1,11 @@
+[Unit]
+Description=CEC initialisation
+BindsTo=default.target
+Wants=default.target
+
+[Install]
+WantedBy=default.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/cec-ctl --playback -S

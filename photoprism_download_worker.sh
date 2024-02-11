@@ -6,7 +6,7 @@ base_url_dl=$3
 image_dl=$4
 image_date=$5
 
-dl_limit=500K
+dl_limit=2M
 thread_limit=2
 
 # Download Images
