@@ -8,4 +8,4 @@ WantedBy=default.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/cec-ctl --playback -S
+ExecStart=/usr/bin/cec-ctl -o RPi --playback -S
