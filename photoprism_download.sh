@@ -40,7 +40,7 @@ session_id=$(echo $response | jq -r ".id")
 
 # Find Images
 #images=$(curl -s $base_url"/api/v1/photos/view?count=720&offset=0&merged=true&country=&camera=2&lens=0&label=&year=0&month=0&color=&order=newest&q=&public=tr>
-images=$(curl -s $base_url"/api/v1/photos/view?count=999&year=&month=$month&day=$day&order=oldest" \
+images=$(curl -s $base_url"/api/v1/photos/view?count=9999&year=&month=$month&day=$day&order=oldest" \
   -H "X-Session-ID: "$session_id)
 
 # Prepare Images download
@@ -64,5 +64,11 @@ logger -t pp_client "Finished $length images download and conversion"
 yesterday=$(date -d "yesterday 13:00" '+%m-%d')
 rm -f images/*$yesterday*
 
-# Save last run date
-echo -e "day_run=$day\nmonth_run=$month" > photoprism_download.run
+if [ -z "$(ls -A images)" ]; then
+  # Empty images
+  logger  -t pp_client "No images downloaded. Something is wrong"
+  exit 1
+else
+  # Save last run date
+  echo -e "day_run=$day\nmonth_run=$month" > photoprism_download.run
+fi

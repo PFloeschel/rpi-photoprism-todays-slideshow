@@ -14,5 +14,5 @@ WorkingDirectory=%h/pp_client/images
 ExecStartPre=/bin/sleep 5
 ExecStart=/usr/bin/swayimg
 Restart=on-failure
-RestartSec=5
+RestartSec=10
 TimeoutStopSec=10

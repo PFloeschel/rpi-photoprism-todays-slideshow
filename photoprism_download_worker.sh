@@ -20,7 +20,7 @@ thread_limit=2
   echo "$count : $format"
   if [[ -z "$format" ]]; then
     format="webp"
-    ffmpeg -threads $thread_limit -i /tmp/pp_client-$count -vcodec libwebp -filter:v fps=fps=5 -loop 0 /tmp/pp_client-$count-resized.$format
+    ffmpeg -threads $thread_limit -i /tmp/pp_client-$count -vcodec libwebp -filter:v fps=fps=15 -loop 0 /tmp/pp_client-$count-resized.$format
   else
     convert -limit thread $thread_limit -adaptive-resize 1920x1080 -quality 95 /tmp/pp_client-$count /tmp/pp_client-$count-resized.$format
   fi
