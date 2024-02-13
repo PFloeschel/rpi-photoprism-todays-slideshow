@@ -15,12 +15,13 @@ thread_limit=2
 
   curl -s -S --limit-rate $dl_limit -o /tmp/pp_client-$count $base_url_dl$image_dl
 
-  format=$(identify -limit thread $thread_limit -format '%[compression]' /tmp/pp_client-$count  | tr '[:upper:]' '[:lower:]')
+  #format=$(identify -limit thread $thread_limit -format '%[compression]' /tmp/pp_client-$count  | tr '[:upper:]' '[:lower:]')
+  format=$(identify -limit thread $thread_limit -format '%m\n' /tmp/pp_client-$count  | tr '[:upper:]' '[:lower:]' | head -n1 )
 
   echo "$count : $format"
   if [[ -z "$format" ]]; then
     format="webp"
-    ffmpeg -threads $thread_limit -i /tmp/pp_client-$count -vcodec libwebp -filter:v fps=fps=15 -loop 0 /tmp/pp_client-$count-resized.$format
+    ffmpeg -threads $thread_limit -t 10 -i /tmp/pp_client-$count -vcodec libwebp -filter:v fps=fps=15 -loop 0 /tmp/pp_client-$count-resized.$format
   else
     convert -limit thread $thread_limit -adaptive-resize 1920x1080 -quality 95 /tmp/pp_client-$count /tmp/pp_client-$count-resized.$format
   fi
