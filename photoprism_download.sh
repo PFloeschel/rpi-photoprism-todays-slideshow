@@ -9,7 +9,7 @@ username="username"
 password="password"
 
 #Set parallel running jobs
-parallel_jobs=2
+parallel_jobs=1
 
 # Read Credentials and Server config from env file
 source photoprism_download.env
@@ -47,15 +47,17 @@ images=$(curl -s $base_url"/api/v1/photos/view?count=9999&year=&month=$month&day
 images_dl+=($(echo $images | jq -r ".[].DownloadUrl"))
 images_date+=($(echo $images | jq -r ".[].TakenAtLocal"))
 mkdir -p images
+mkdir -p movies
 
 # Download Images
 length=$(printf "%03d" ${#images_dl[@]})
 logger -t pp_client "Starting $length images download and conversion"
 for i in ${!images_dl[@]}; do
   printf -v count "%03d" "$((i+1))"
-  sem --id pp_client -j $parallel_jobs ./photoprism_download_worker.sh $count $length $base_url_dl ${images_dl[$i]} ${images_date[$i]}
+  #sem --id pp_client -j $parallel_jobs ./photoprism_download_worker.sh $count $length $base_url_dl ${images_dl[$i]} ${images_date[$i]}
+  ./photoprism_download_worker.sh $count $length $base_url_dl ${images_dl[$i]} ${images_date[$i]}
 done
-sem --id pp_client --wait
+#sem --id pp_client --wait
 
 echo "Finished $length images download and conversion"
 logger -t pp_client "Finished $length images download and conversion"
@@ -63,6 +65,7 @@ logger -t pp_client "Finished $length images download and conversion"
 # Remove previous files
 yesterday=$(date -d "yesterday 13:00" '+%m-%d')
 rm -f images/*$yesterday*
+rm -f movies/*$yesterday*
 
 if [ -z "$(ls -A images)" ]; then
   # Empty images
