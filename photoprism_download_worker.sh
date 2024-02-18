@@ -77,9 +77,9 @@ source photoprism_download_worker.env
 
     echo "$count: Loading area maps"
     curl -s -S --limit-rate $DL_LIMIT "https://maps.locationiq.com/v3/staticmap?key=$API_KEY&size=1920x1080&format=jpeg&markers=icon:large-red-cutout|$exif_lat,$exif_lon&zoom=12" \
-     -o "images/$image_date--$count-map1.jpeg"
+     -o "images/$image_date--$count.map1.jpeg"
     curl -s -S --limit-rate $DL_LIMIT "https://maps.locationiq.com/v3/staticmap?key=$API_KEY&size=1920x1080&format=jpeg&markers=icon:large-red-cutout|$exif_lat,$exif_lon&zoom=17" \
-     -o "images/$image_date--$count-map2.jpeg"
+     -o "images/$image_date--$count.map2.jpeg"
    else
     echo "$count: No GPS data found."
   fi
