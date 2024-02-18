@@ -62,7 +62,7 @@ source photoprism_download_worker.env
     exif_lon=$(echo "${exif_lon//+}")
 
     echo "$count : GPS: $exif_lat , $exif_lon"
-    sleep 1
+    # sleep 1
     geo_resp=$(curl -s -S --request GET --limit-rate $DL_LIMIT \
        --url "https://eu1.locationiq.com/v1/reverse?key=$API_KEY&lat=$exif_lat&lon=$exif_lon&normalizeaddress=1&addressdetails=1&format=json&accept-language=en" \
        --header 'accept: application/json')
@@ -75,10 +75,13 @@ source photoprism_download_worker.env
     exiv2 -M "add Exif.Image.Software $geo_loc" $filename
 
     echo "$count : Loading area maps"
-    curl -s -S --limit-rate $DL_LIMIT "https://maps.locationiq.com/v3/staticmap?key=$API_KEY&size=1920x1080&format=jpeg&markers=icon:large-red-cutout|$exif_lat,$exif_lon&zoom=12" \
+    curl -s -S --limit-rate $DL_LIMIT \
+     "https://maps.locationiq.com/v3/staticmap?key=$API_KEY&size=960x540&scale=2&format=jpeg&markers=icon:large-red-cutout|$exif_lat,$exif_lon&zoom=11" \
      -o "images/$image_date--$count.map1.jpeg"
-    curl -s -S --limit-rate $DL_LIMIT "https://maps.locationiq.com/v3/staticmap?key=$API_KEY&size=1920x1080&format=jpeg&markers=icon:large-red-cutout|$exif_lat,$exif_lon&zoom=17" \
+    curl -s -S --limit-rate $DL_LIMIT \
+     "https://maps.locationiq.com/v3/staticmap?key=$API_KEY&size=960x540&scale=2&format=jpeg&markers=icon:large-red-cutout|$exif_lat,$exif_lon&zoom=16" \
      -o "images/$image_date--$count.map2.jpeg"
+
    else
     echo "$count : No GPS data found."
   fi
