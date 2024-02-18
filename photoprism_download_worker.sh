@@ -12,8 +12,8 @@ THREAD_LIMIT=
 source photoprism_download_worker.env
 
 # Download Images
-  echo -e "\nDownloading $count / $length"
   logger -t pp_client "Starting download + conversion  $count / $length"
+  echo -e "\nDownloading $count / $length"
 
   curl -s -S --limit-rate $DL_LIMIT -o /tmp/pp_client-$count $base_url_dl$image_dl
 
@@ -30,7 +30,6 @@ source photoprism_download_worker.env
   else
     convert -limit thread $THREAD_LIMIT -adaptive-resize 1920x1080 -quality 95 /tmp/pp_client-$count /tmp/pp_client-$count-resized.$format
   fi
-  echo -e "Finished conversion/resizing  $count / $length"
 
   mv -f /tmp/pp_client-$count-resized.$format images/$image_date--$count.$format
   rm /tmp/pp_client-$count*
@@ -75,13 +74,14 @@ source photoprism_download_worker.env
     echo "$count : $geo_loc"
     exiv2 -M "add Exif.Image.Software $geo_loc" $filename
 
-    echo "$count: Loading area maps"
+    echo "$count : Loading area maps"
     curl -s -S --limit-rate $DL_LIMIT "https://maps.locationiq.com/v3/staticmap?key=$API_KEY&size=1920x1080&format=jpeg&markers=icon:large-red-cutout|$exif_lat,$exif_lon&zoom=12" \
      -o "images/$image_date--$count.map1.jpeg"
     curl -s -S --limit-rate $DL_LIMIT "https://maps.locationiq.com/v3/staticmap?key=$API_KEY&size=1920x1080&format=jpeg&markers=icon:large-red-cutout|$exif_lat,$exif_lon&zoom=17" \
      -o "images/$image_date--$count.map2.jpeg"
    else
-    echo "$count: No GPS data found."
+    echo "$count : No GPS data found."
   fi
 
+  echo -e "Finished download + conversion  $count / $length"
   logger -t pp_client "Finished download + conversion  $count / $length"
