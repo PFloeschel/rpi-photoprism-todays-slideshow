@@ -9,6 +9,8 @@ parallel
 webp
 unattended-upgrades
 powermgmt-base
+libimage-exiftool-perl
+exiv2
 
 [purge]
 avahi-daemon
