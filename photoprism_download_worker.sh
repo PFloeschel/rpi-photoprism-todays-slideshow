@@ -54,6 +54,7 @@ source photoprism_download_worker.env
 
   exif_lat=$(echo "$exif_loc" | jq -r .[].GPSLatitude)
   exif_lon=$(echo "$exif_loc" | jq -r .[].GPSLongitude)
+  exif_alt=$(echo "$exif_loc" | jq -r .[].GPSAltitude)
 
   if [ "$exif_lat" != null ];
    then
@@ -70,6 +71,7 @@ source photoprism_download_worker.env
     #echo $geo_resp | jq .
     #echo $geo_resp | jq -r '.address | .road + ", " + .city + ", " + .country'
     geo_loc=$(echo "$geo_resp" | jq -r '.address | .road + ", " + .city + ", " + .country')
+    geo_loc=$(echo "$geo_loc, $exif_alt")
 
     echo "$count : $geo_loc"
     exiv2 -M "add Exif.Image.Software $geo_loc" $filename
