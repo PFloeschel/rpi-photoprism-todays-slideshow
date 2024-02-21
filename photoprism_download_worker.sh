@@ -59,7 +59,7 @@ source photoprism_download_worker.env
   exif_lon=$(echo "$exif_loc" | jq -r .[].GPSLongitude)
   exif_alt=$(echo "$exif_loc" | jq -r .[].GPSAltitude)
 
-  if [ "$exif_lat" != null ];
+  if [ "$exif_lat" != null ] && [[ -n "$exif_lat" ]] ;
    then
 
     exif_lat=$(echo "${exif_lat//+}")
@@ -96,11 +96,14 @@ source photoprism_download_worker.env
 
     #BingMaps
       curl -s -S --limit-rate $DL_LIMIT \
-        "https://dev.virtualearth.net/REST/v1/Imagery/Map/AerialWithLabels?mS=1920,1080&dpi=Large&pp=$exif_lat,$exif_lon;46&zoomLevel=12&key=$API_KEY_BING" \
+        "https://dev.virtualearth.net/REST/v1/Imagery/Map/AerialWithLabels?mS=1920,1080&dpi=Large&pp=$exif_lat,$exif_lon;46&zoomLevel=11&key=$API_KEY_BING" \
         -o "images/$image_date--$count.map1.jpg"
       curl -s -S --limit-rate $DL_LIMIT \
-        "https://dev.virtualearth.net/REST/v1/Imagery/Map/AerialWithLabels?mS=1920,1080&dpi=Large&pp=$exif_lat,$exif_lon;46&zoomLevel=17&key=$API_KEY_BING" \
+        "https://dev.virtualearth.net/REST/v1/Imagery/Map/AerialWithLabels?mS=1920,1080&dpi=Large&pp=$exif_lat,$exif_lon;46&zoomLevel=15&key=$API_KEY_BING" \
         -o "images/$image_date--$count.map2.jpg"
+      curl -s -S --limit-rate $DL_LIMIT \
+        "https://dev.virtualearth.net/REST/v1/Imagery/Map/AerialWithLabels?mS=1920,1080&dpi=Large&pp=$exif_lat,$exif_lon;46&zoomLevel=18&key=$API_KEY_BING" \
+        -o "images/$image_date--$count.map3.jpg"
 
    else
     echo "$count : No GPS data found."
