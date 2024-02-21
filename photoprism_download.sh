@@ -20,9 +20,6 @@ source photoprism_download.env
 day="$(date +%d)"
 month="$(date +%m)"
 
-day=12
-month=01
-
 # Read last run date
 touch photoprism_download.run
 day_run=""
