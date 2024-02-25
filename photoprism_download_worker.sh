@@ -26,16 +26,18 @@ source photoprism_download_worker.env
   echo "$count : $format"
   if [[ -z "$format" ]]; then
     format=$(ffprobe -threads $THREAD_LIMIT -hide_banner -show_format -print_format json /tmp/pp_client-$count | jq -r .format.format_name | cut -d, -f1)
+    format=$(echo "${format//_pipe}")
     cp -f /tmp/pp_client-$count movies/$image_date--$count.$format
 
     format="webp"
-    ffmpeg -hide_banner -threads $THREAD_LIMIT -t 5 -i /tmp/pp_client-$count -vcodec libwebp -filter:v fps=fps=5 -loop 0 /tmp/pp_client-$count-resized.$format
+    ffmpeg -hide_banner -threads $THREAD_LIMIT -t 5 -i /tmp/pp_client-$count -vcodec libwebp -r 5 -loop 0 /tmp/pp_client-$count-resized.$format
   else
     convert -limit thread $THREAD_LIMIT -adaptive-resize 1920x1080 -quality 95 /tmp/pp_client-$count /tmp/pp_client-$count-resized.$format
   fi
 
   mv -f /tmp/pp_client-$count-resized.$format images/$image_date--$count.$format
   rm /tmp/pp_client-$count*
+
 
 # Simplify EXIF for viewing and get GPS location/maps
 
