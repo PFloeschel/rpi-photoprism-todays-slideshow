@@ -111,5 +111,11 @@ source photoprism_download_worker.env
     echo "$count : No GPS data found."
   fi
 
+  # remove files smaller 1024 bytes - cannot be interesting images
+  filesize=$(wc -c $filename | awk '{print $1}')
+  if [ "$filesize" -lt "1024" ]; then
+    rm $filename
+  fi
+
   echo -e "Finished download + conversion  $count / $length"
   logger -t pp_client "Finished download + conversion  $count / $length"
