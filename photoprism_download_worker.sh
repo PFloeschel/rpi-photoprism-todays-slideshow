@@ -29,8 +29,11 @@ source photoprism_download_worker.env
     format=$(echo "${format//_pipe}")
     cp -f /tmp/pp_client-$count movies/$image_date--$count.$format
 
-    format="webp"
-    ffmpeg -hide_banner -threads $THREAD_LIMIT -t 5 -i /tmp/pp_client-$count -vcodec libwebp -r 5 -loop 0 /tmp/pp_client-$count-resized.$format
+    #format="webp"
+    #ffmpeg -hide_banner -threads $THREAD_LIMIT -t 5 -i /tmp/pp_client-$count -vcodec libwebp -r 5 -loop 0 /tmp/pp_client-$count-resized.$format
+    format="avif"
+    ffmpeg -hide_banner -threads $THREAD_LIMIT -t 5 -i /tmp/pp_client-$count -pix_fmt yuv420p -r 5 -f yuv4mpegpipe /tmp/pp_client-$count.y4m
+    avifenc -s 10 -q 35 /tmp/pp_client-$count.y4m /tmp/pp_client-$count-resized.$format -j all
   else
     convert -limit thread $THREAD_LIMIT -adaptive-resize 1920x1080 -quality 95 /tmp/pp_client-$count /tmp/pp_client-$count-resized.$format
   fi

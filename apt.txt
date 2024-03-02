@@ -11,6 +11,7 @@ unattended-upgrades
 powermgmt-base
 libimage-exiftool-perl
 exiv2
+libavif-bin
 
 [purge]
 avahi-daemon
