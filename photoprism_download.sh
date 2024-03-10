@@ -33,6 +33,11 @@ then
   exit 0
 fi
 
+# Remove previous files
+yesterday=$(date -d "yesterday 13:00" '+%m-%d')
+rm -f images/*$yesterday*
+rm -f movies/*$yesterday*
+
 echo "Starting photos download"
 # Creating Session
 response=$(curl -s -H "Content-Type: application/json" -d '{"username": "'$username'", "password": "'$password'"}' $base_url"/api/v1/session")
@@ -61,11 +66,6 @@ done
 
 echo "Finished $length images download and conversion"
 logger -t pp_client "Finished $length images download and conversion"
-
-# Remove previous files
-yesterday=$(date -d "yesterday 13:00" '+%m-%d')
-rm -f images/*$yesterday*
-rm -f movies/*$yesterday*
 
 if [ -z "$(ls -A images)" ]; then
   # Empty images
