@@ -40,6 +40,10 @@ if [[ -z "$format" ]]; then
 # PHOTO
 else
   # JPEG
+  #convert -limit thread $THREAD_LIMIT -adaptive-resize 1920x1080 -quality 100 /tmp/pp_client-$count /tmp/pp_client-$count-resized.$format
+
+  # HEIC
+  format="heic"
   convert -limit thread $THREAD_LIMIT -adaptive-resize 1920x1080 -quality 100 /tmp/pp_client-$count /tmp/pp_client-$count-resized.$format
 
   # PNG / AVIF
@@ -49,16 +53,9 @@ else
   # Simplify EXIF for viewing
   filename="/tmp/pp_client-$count-resized.$format"
   # simplify camera and exif data
-  exif_make=$(exiv2 -Pt -g "Exif.Image.Make" $filename)
-  exif_model=$(exiv2 -Pt -g "Exif.Image.Model" $filename)
-  exif_cam=$(echo "$exif_make $exif_model")
-
-  exiv2 -M "set Exif.Image.Make $exif_cam" $filename
-  exiv2 -M 'del Exif.Image.Model' $filename
-  exiv2 -M 'del Exif.Image.Software' $filename
-  exiv2 -M 'del Exif.Photo.ExposureTime' $filename
-  exiv2 -M 'del Exif.Photo.FNumber' $filename
-  exiv2 -M 'del Exif.Photo.MakerNote' $filename
+  exiftool -EXIFIFD:all= $filename
+  exiftool '-MODEL<$MAKE $MODEL' $filename
+  exiftool -MAKE= -SOFTWARE= $filename
 
   # Get EXIF GPS
   exif_loc=$(exiftool -F -m -location:all -c %+.8f -j $filename)
@@ -90,7 +87,7 @@ else
     geo_loc=$(echo "$geo_loc, $exif_alt")
 
     echo "$count : $geo_loc"
-    exiv2 -M "add Exif.Image.Software $geo_loc" $filename
+    exiftool "-SOFTWARE=$geo_loc" $filename
 
    else
     echo "$count : No GPS data found."

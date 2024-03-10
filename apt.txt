@@ -10,8 +10,8 @@ webp
 unattended-upgrades
 powermgmt-base
 libimage-exiftool-perl
-exiv2
 libavif-bin
+mplayer
 
 [purge]
 avahi-daemon
