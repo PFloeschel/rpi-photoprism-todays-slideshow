@@ -40,6 +40,7 @@ if [[ -z "$format" ]]; then
 # PHOTO
 else
   # JPEG
+  #format="jpeg"
   #convert -limit thread $THREAD_LIMIT -adaptive-resize 1920x1080 -quality 100 /tmp/pp_client-$count /tmp/pp_client-$count-resized.$format
 
   # HEIC

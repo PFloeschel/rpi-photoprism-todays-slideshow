@@ -5,7 +5,6 @@ swayimg
 jq
 imagemagick
 ffmpeg
-parallel
 webp
 unattended-upgrades
 powermgmt-base

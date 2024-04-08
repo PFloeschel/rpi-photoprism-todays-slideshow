@@ -57,12 +57,23 @@ mkdir -p movies
 # Download Images
 length=$(printf "%03d" ${#images_dl[@]})
 logger -t pp_client "Starting $length images download and conversion"
+
+#for i in {0..2}; do
 for i in ${!images_dl[@]}; do
-  printf -v count "%03d" "$((i+1))"
-  #sem --id pp_client -j $parallel_jobs ./photoprism_download_worker.sh $count $length $base_url_dl ${images_dl[$i]} ${images_date[$i]}
-  ./photoprism_download_worker.sh $count $length $base_url_dl ${images_dl[$i]} ${images_date[$i]}
+  (
+    printf -v count "%03d" "$((i+1))"
+    ./photoprism_download_worker.sh $count $length $base_url_dl ${images_dl[$i]} ${images_date[$i]}
+  ) &
+
+ # allow to execute up to $parallel_jobs jobs in parallel
+  if [[ $(jobs -r -p | wc -l) -ge $parallel_jobs ]]; then
+    # now there are $parallel_jobs jobs already running, so wait here for any job to be finished so there is a place to start next one.
+    wait -n
+  fi
 done
-#sem --id pp_client --wait
+
+# no more jobs to be started but wait for pending jobs (all need to be finished)
+wait
 
 echo "Finished $length images download and conversion"
 logger -t pp_client "Finished $length images download and conversion"
