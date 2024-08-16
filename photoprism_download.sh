@@ -8,6 +8,12 @@ base_url_dl="http://server"
 username="username"
 password="password"
 
+# FTP Upload
+ftp_host="host"
+ftp_user="username"
+ftp_pw="password"
+ftp_limit=2M
+
 #Set parallel running jobs
 parallel_jobs=1
 
@@ -74,6 +80,20 @@ done
 
 # no more jobs to be started but wait for pending jobs (all need to be finished)
 wait
+
+#Upload to central server for all PIs
+cd images
+for filename in *; do
+  curl -s -S --ftp-create-dirs --limit-rate $ftp_limit -T $filename ftp://$ftp_user:$ftp_pw@$ftp_host/pp_pictures/$month/images-$month$day/
+done
+cd ..
+if [ -n "$(ls -A movies)" ]; then
+  cd movies
+  for filename in *; do
+    curl -s -S --ftp-create-dirs --limit-rate $ftp_limit -T $filename ftp://$ftp_user:$ftp_pw@$ftp_host/pp_pictures/$month/movies-$month$day/
+  done
+  cd ..
+fi
 
 echo "Finished $length images download and conversion"
 logger -t pp_client "Finished $length images download and conversion"

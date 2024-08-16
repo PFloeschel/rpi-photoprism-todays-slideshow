@@ -6,6 +6,8 @@ base_url_dl=$3
 image_dl=$4
 image_date=$5
 
+# ":" is not a valid smb char, replace with "_"
+image_date=$(echo "$image_date" |tr ":" "_")
 
 API_KEY_BING=
 API_KEY_LOCIQ=
