@@ -120,6 +120,7 @@ else
   curl -s -S --retry-all-errors --retry-delay 120 --retry 60 --limit-rate $ftp_limit ftp://$ftp_user:$ftp_pw@$ftp_host/pp_pictures/$month/images-$month$day/.finished
   # download all images
   wget -q --limit-rate $ftp_limit ftp://$ftp_user:$ftp_pw@$ftp_host/pp_pictures/$month/images-$month$day/*
+  rm .finished
   cd ..
   cd movies
   wget -q --limit-rate $ftp_limit ftp://$ftp_user:$ftp_pw@$ftp_host/pp_pictures/$month/movies-$month$day/*
