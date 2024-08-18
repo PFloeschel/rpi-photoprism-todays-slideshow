@@ -5,6 +5,7 @@ length=$2
 base_url_dl=$3
 image_dl=$4
 image_date=$5
+image_format=$6
 
 # ":" is not a valid smb char, replace with "_"
 image_date=$(echo "$image_date" |tr ":" "_")
@@ -24,7 +25,7 @@ curl -s -S --limit-rate $DL_LIMIT -o /tmp/pp_client-$count $base_url_dl$image_dl
 
 format=$(identify -limit thread $THREAD_LIMIT -format '%m\n' /tmp/pp_client-$count  | tr '[:upper:]' '[:lower:]' | head -n1 )
 
-echo "$count : $format"
+echo "$count : $format --> $image_format"
 
 # VIDEO
 if [[ -z "$format" ]]; then
@@ -32,26 +33,32 @@ if [[ -z "$format" ]]; then
   format=$(echo "${format//_pipe}")
   cp -f /tmp/pp_client-$count movies/$image_date--$count.$format
 
-  #format="webp"
-  #ffmpeg -hide_banner -threads $THREAD_LIMIT -t 5 -i /tmp/pp_client-$count -vcodec libwebp -r 5 -loop 0 /tmp/pp_client-$count-resized.$format
-
   format="avif"
   ffmpeg -hide_banner -threads $THREAD_LIMIT -t 10 -i /tmp/pp_client-$count -pix_fmt yuv420p -r 1 -f yuv4mpegpipe /tmp/pp_client-$count.y4m
   avifenc -p /tmp/pp_client-$count.y4m /tmp/pp_client-$count-resized.$format -j all
 
 # PHOTO
 else
-  # JPEG
-  #format="jpeg"
-  #convert -limit thread $THREAD_LIMIT -adaptive-resize 1920x1080 -quality 100 /tmp/pp_client-$count /tmp/pp_client-$count-resized.$format
-
-  # HEIC
-  format="heic"
-  convert -limit thread $THREAD_LIMIT -adaptive-resize 1920x1080 -quality 100 /tmp/pp_client-$count /tmp/pp_client-$count-resized.$format
-
-  # PNG / AVIF
-  #format="png"
-  #convert -limit thread $THREAD_LIMIT -adaptive-resize 1920x1080 /tmp/pp_client-$count /tmp/pp_client-$count-resized.$format
+  format=$image_format
+  case $image_format in
+   # JPEG
+   jpeg)
+     convert -limit thread $THREAD_LIMIT -adaptive-resize 1920x1080 -quality 100 /tmp/pp_client-$count /tmp/pp_client-$count-resized.$format
+   ;;
+   # HEIC
+   heic)
+     convert -limit thread $THREAD_LIMIT -adaptive-resize 1920x1080 -quality 100 /tmp/pp_client-$count /tmp/pp_client-$count-resized.$format
+   ;;
+   # PNG / AVIF
+   png)
+     convert -limit thread $THREAD_LIMIT -adaptive-resize 1920x1080 /tmp/pp_client-$count /tmp/pp_client-$count-resized.$format
+   ;;
+   # ILLEGAL
+   *)
+     echo -e "Illegal image format requested: $image_format"
+     logger -t pp_client "Illegal image format requested: $image_format"
+   ;;
+  esac
 
   # Simplify EXIF for viewing
   filename="/tmp/pp_client-$count-resized.$format"
