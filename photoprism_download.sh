@@ -93,6 +93,7 @@ then
   wait
 
   # Upload to central server for all PIs
+  logger -t pp_client "Starting FTP upload $length images and movies"
   cd images
   for filename in *; do
     curl -s -S --ftp-create-dirs --limit-rate $ftp_limit -T $filename ftp://$ftp_user:$ftp_pw@$ftp_host/pp_pictures/$month/images-$month$day/
@@ -107,9 +108,10 @@ then
   fi
   # Add .finished file for secondary processors
   echo -n "" | curl -s -S --ftp-create-dirs --limit-rate $ftp_limit -T - ftp://$ftp_user:$ftp_pw@$ftp_host/pp_pictures/$month/images-$month$day/.finished
+  logger -t pp_client "Finished FTP upload $length images and movies"
 
-  echo "Finished $length images download and conversion"
-  logger -t pp_client "Finished $length images download and conversion"
+  echo "Finished $length images download, conversion and upload"
+  logger -t pp_client "Finished $length images download, conversion and upload"
 
 #Secondary processor
 else
@@ -117,8 +119,10 @@ else
   logger -t pp_client "Starting downloading from FTP"
   cd images
   # wait max 2 hours ( 120secs * 60 ) for last image to appear on FTP
+  echo "Waiting for files on FTP - ignore curl warnings"
   curl -s -S --retry-all-errors --retry-delay 120 --retry 60 --limit-rate $ftp_limit ftp://$ftp_user:$ftp_pw@$ftp_host/pp_pictures/$month/images-$month$day/.finished
   # download all images
+  echo "FTP is ready: start real downloading"
   wget -q --limit-rate $ftp_limit ftp://$ftp_user:$ftp_pw@$ftp_host/pp_pictures/$month/images-$month$day/*
   rm .finished
   cd ..
