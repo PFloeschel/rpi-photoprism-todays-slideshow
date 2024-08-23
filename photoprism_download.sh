@@ -118,9 +118,9 @@ else
   echo "Starting downloading from FTP"
   logger -t pp_client "Starting downloading from FTP"
   cd images
-  # wait max 2 hours ( 120secs * 60 ) for last image to appear on FTP
+  # wait max 2.5 hours ( 300 secs * 30 retries ) for last image to appear on FTP
   echo "Waiting for files on FTP - ignore curl warnings"
-  curl -s -S --retry-all-errors --retry-delay 120 --retry 60 --limit-rate $ftp_limit ftp://$ftp_user:$ftp_pw@$ftp_host/pp_pictures/$month/images-$month$day/.finished
+  curl -s -S --retry-all-errors --retry-delay 300 --retry 30 --limit-rate $ftp_limit ftp://$ftp_user:$ftp_pw@$ftp_host/pp_pictures/$month/images-$month$day/.finished
   # download all images
   echo "FTP is ready: start real downloading"
   wget -q --limit-rate $ftp_limit ftp://$ftp_user:$ftp_pw@$ftp_host/pp_pictures/$month/images-$month$day/*
