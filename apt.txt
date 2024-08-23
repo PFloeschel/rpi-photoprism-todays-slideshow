@@ -15,3 +15,5 @@ mplayer
 [purge]
 avahi-daemon
 
+[systemd]
+systemctl mask tmp.mount
