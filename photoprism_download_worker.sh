@@ -7,6 +7,8 @@ image_dl=$4
 image_date=$5
 image_format=$6
 
+image_weekday=$(date +"%A" -d $image_date)
+
 # ":" is not a valid smb char, replace with "_"
 image_date=$(echo "$image_date" |tr ":" "_")
 
@@ -25,12 +27,12 @@ curl -s -S --limit-rate $DL_LIMIT -o /tmp/pp_client-$count $base_url_dl$image_dl
 
 format=$(identify -limit thread $THREAD_LIMIT -format '%m\n' /tmp/pp_client-$count  | tr '[:upper:]' '[:lower:]' | head -n1 )
 
-echo "$count : $format --> $image_format"
-
 # VIDEO
 if [[ -z "$format" ]]; then
   format=$(ffprobe -threads $THREAD_LIMIT -hide_banner -show_format -print_format json /tmp/pp_client-$count | jq -r .format.format_name | cut -d, -f1)
   format=$(echo "${format//_pipe}")
+  echo "$count : $format --> avif"
+
   cp -f /tmp/pp_client-$count movies/$image_date--$count.$format
 
   format="avif"
@@ -39,6 +41,7 @@ if [[ -z "$format" ]]; then
 
 # PHOTO
 else
+  echo "$count : $format --> $image_format"
   format=$image_format
   case $image_format in
    # JPEG
@@ -65,7 +68,8 @@ else
   # simplify camera and exif data
   exiftool -EXIFIFD:all= $filename
   exiftool '-MODEL<$MAKE $MODEL' $filename
-  exiftool -MAKE= -SOFTWARE= $filename
+  #exiftool -MAKE= -SOFTWARE= $filename
+  exiftool "-MAKE=$image_weekday" -SOFTWARE= $filename
 
   # Get EXIF GPS
   exif_loc=$(exiftool -F -m -location:all -c %+.8f -j $filename)
