@@ -1,6 +1,7 @@
 [Unit]
 Description=Scheduled PhotoPrism Download
 Conflicts=pp_client_img.service
+After=systemd-user-sessions.service
 
 [Install]
 WantedBy=default.target

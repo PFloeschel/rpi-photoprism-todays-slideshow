@@ -1,8 +1,10 @@
 [Unit]
 Description=swayimg - Slideshow
 Documentation=man:swayimg(5)
-After=sway.service
-Requires=sway.service
+#After=sway.service
+#Requires=sway.service
+After=weston.service
+Requires=weston.service
 
 [Install]
 WantedBy=default.target

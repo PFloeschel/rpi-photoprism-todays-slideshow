@@ -1,7 +1,6 @@
 [Unit]
 Description=CEC initialisation
-After=sway.service
-Requires=sway.service
+After=systemd-user-sessions.service
 
 [Install]
 WantedBy=default.target

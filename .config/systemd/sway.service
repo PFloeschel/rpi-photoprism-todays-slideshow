@@ -3,7 +3,8 @@ Description=sway - SirCmpwn's Wayland window manager
 Documentation=man:sway(5)
 BindsTo=default.target
 Wants=default.target
-After=getty.target
+#After=getty.target
+After=systemd-user-sessions.service
 
 [Install]
 WantedBy=default.target
