@@ -11,9 +11,12 @@ libimage-exiftool-perl
 libavif-bin
 mpv
 weston
+adwaita-icon-theme
 
 [purge]
 avahi-daemon
+exim4*
 
 [systemd]
 systemctl mask tmp.mount
+#systemctl disable exim4
