@@ -1,6 +1,5 @@
 [install]
 rpd-plym-splash
-sway 
 swayimg
 jq
 imagemagick
@@ -10,7 +9,8 @@ unattended-upgrades
 powermgmt-base
 libimage-exiftool-perl
 libavif-bin
-mplayer
+mpv
+weston
 
 [purge]
 avahi-daemon
