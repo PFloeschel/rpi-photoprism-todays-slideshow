@@ -94,15 +94,17 @@ then
 
   # Upload to central server for all PIs
   logger -t pp_client "Starting FTP upload $length images and movies"
-  cd images
-  for filename in *; do
-    curl -s -S --ftp-create-dirs --limit-rate $ftp_limit -T $filename ftp://$ftp_user:$ftp_pw@$ftp_host/pp_pictures/$month/images-$month$day/
-  done
-  cd ..
   if [ -n "$(ls -A movies)" ]; then
     cd movies
     for filename in *; do
       curl -s -S --ftp-create-dirs --limit-rate $ftp_limit -T $filename ftp://$ftp_user:$ftp_pw@$ftp_host/pp_pictures/$month/movies-$month$day/
+    done
+    cd ..
+  fi
+  if [ -n "$(ls -A images)" ]; then
+    cd images
+    for filename in *; do
+      curl -s -S --ftp-create-dirs --limit-rate $ftp_limit -T $filename ftp://$ftp_user:$ftp_pw@$ftp_host/pp_pictures/$month/images-$month$day/
     done
     cd ..
   fi

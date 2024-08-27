@@ -36,7 +36,7 @@ if [[ -z "$format" ]]; then
   cp -f /tmp/pp_client-$count movies/$image_date--$count.$format
 
   format="avif"
-  ffmpeg -hide_banner -threads $THREAD_LIMIT -t 10 -i /tmp/pp_client-$count -pix_fmt yuv420p -r 1 -f yuv4mpegpipe /tmp/pp_client-$count.y4m
+  ffmpeg -hide_banner -threads $THREAD_LIMIT -t 10 -i /tmp/pp_client-$count -vf "scale=w=1920:h=1080:force_original_aspect_ratio=decrease" -r 1 -f yuv4mpegpipe /tmp/pp_client-$count.y4m
   avifenc -p /tmp/pp_client-$count.y4m /tmp/pp_client-$count-resized.$format -j all
 
 # PHOTO
