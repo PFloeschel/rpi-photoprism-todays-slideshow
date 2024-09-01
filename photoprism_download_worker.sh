@@ -53,10 +53,11 @@ else
    heic)
      convert -limit thread $THREAD_LIMIT -adaptive-resize 1920x1080 -quality 100 /tmp/pp_client-$count /tmp/pp_client-$count-resized.$format
    ;;
-   # PNG / AVIF
+   # PNG
    png)
      convert -limit thread $THREAD_LIMIT -adaptive-resize 1920x1080 /tmp/pp_client-$count /tmp/pp_client-$count-resized.$format
    ;;
+   # AVIF
    avif)
      convert -limit thread $THREAD_LIMIT -adaptive-resize 1920x1080 -quality 100 /tmp/pp_client-$count /tmp/pp_client-$count-resized.$format
    ;;
@@ -111,8 +112,6 @@ else
     echo "$count : No GPS data found."
   fi
 
-  #format="avif"
-  #avifenc -q 95 -p /tmp/pp_client-$count.png /tmp/pp_client-$count-resized.$format -j all
 fi
 
 # MOVE from /tmp
@@ -143,10 +142,10 @@ if [ "$exif_lat" != null ] && [[ -n "$exif_lat" ]] ;
       "https://dev.virtualearth.net/REST/v1/Imagery/Map/AerialWithLabels?mS=1920,1080&dpi=Large&fmt=png&pp=$exif_lat,$exif_lon;46&zoomLevel=18&key=$API_KEY_BING" \
       -o "images/$image_date--$count.map3.png"
 
-  #convert -limit thread $THREAD_LIMIT -quality 100 images/$image_date--$count.map1.png images/$image_date--$count.map1.heic
-  #convert -limit thread $THREAD_LIMIT -quality 100 images/$image_date--$count.map2.png images/$image_date--$count.map2.heic
-  #convert -limit thread $THREAD_LIMIT -quality 100 images/$image_date--$count.map3.png images/$image_date--$count.map3.heic
-  #rm images/$image_date--$count.map?.png
+  convert -limit thread $THREAD_LIMIT -quality 100 images/$image_date--$count.map1.png images/$image_date--$count.map1.avif
+  convert -limit thread $THREAD_LIMIT -quality 100 images/$image_date--$count.map2.png images/$image_date--$count.map2.avif
+  convert -limit thread $THREAD_LIMIT -quality 100 images/$image_date--$count.map3.png images/$image_date--$count.map3.avif
+  rm images/$image_date--$count.map?.png
 fi
 
 # Remove files smaller 1024 bytes - cannot be interesting images
