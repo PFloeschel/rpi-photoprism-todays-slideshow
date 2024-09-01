@@ -31,13 +31,14 @@ format=$(identify -limit thread $THREAD_LIMIT -format '%m\n' /tmp/pp_client-$cou
 if [[ -z "$format" ]]; then
   format=$(ffprobe -threads $THREAD_LIMIT -hide_banner -show_format -print_format json /tmp/pp_client-$count | jq -r .format.format_name | cut -d, -f1)
   format=$(echo "${format//_pipe}")
-  echo "$count : $format --> avif"
+  echo "$count : $format --> mov.avif"
 
   cp -f /tmp/pp_client-$count movies/$image_date--$count.$format
 
-  format="avif"
-  ffmpeg -hide_banner -threads $THREAD_LIMIT -t 10 -i /tmp/pp_client-$count -vf "scale=w=1920:h=1080:force_original_aspect_ratio=decrease" -r 1 -f yuv4mpegpipe /tmp/pp_client-$count.y4m
-  avifenc -p /tmp/pp_client-$count.y4m /tmp/pp_client-$count-resized.$format -j all
+  format="mov.avif"
+  ffmpeg -hide_banner -threads $THREAD_LIMIT -t 10 -i /tmp/pp_client-$count -vf "scale='if(gte(a\,1920/1080)\,min(1920\,iw)\,-2):if(gte(a\,1920/1080)\,-2\,min(1080\,ih))'" -r 1 -f yuv4mpegpipe /tmp/pp_client-$count.y4m
+  avifenc -j all -c svt -p /tmp/pp_client-$count.y4m /tmp/pp_client-$count-resized.$format
+  ##SvtAv1EncApp -i /tmp/pp_client-$count.y4m -b /tmp/pp_client-$count-resized.$format
 
 # PHOTO
 else
@@ -55,6 +56,9 @@ else
    # PNG / AVIF
    png)
      convert -limit thread $THREAD_LIMIT -adaptive-resize 1920x1080 /tmp/pp_client-$count /tmp/pp_client-$count-resized.$format
+   ;;
+   avif)
+     convert -limit thread $THREAD_LIMIT -adaptive-resize 1920x1080 -quality 100 /tmp/pp_client-$count /tmp/pp_client-$count-resized.$format
    ;;
    # ILLEGAL
    *)

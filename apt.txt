@@ -12,6 +12,7 @@ libavif-bin
 mpv
 weston
 adwaita-icon-theme
+svt-av1
 
 [purge]
 avahi-daemon

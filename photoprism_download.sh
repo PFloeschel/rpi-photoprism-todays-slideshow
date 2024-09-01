@@ -15,7 +15,7 @@ ftp_pw="password"
 ftp_limit=2M
 
 # Ourput image format
-image_format="heic"
+image_format="avif"
 
 # Primary/secondary image processor - Primary does all the work and uploads to FTP / secondary only waits and donloads from FTP
 primary_proc=1
