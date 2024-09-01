@@ -37,7 +37,7 @@ if [[ -z "$format" ]]; then
 
   format="mov.avif"
   ffmpeg -hide_banner -threads $THREAD_LIMIT -t 10 -i /tmp/pp_client-$count -vf "scale='if(gte(a\,1920/1080)\,min(1920\,iw)\,-2):if(gte(a\,1920/1080)\,-2\,min(1080\,ih))'" -r 1 -f yuv4mpegpipe /tmp/pp_client-$count.y4m
-  avifenc -j all -c svt -p /tmp/pp_client-$count.y4m /tmp/pp_client-$count-resized.$format
+  avifenc -j all -p /tmp/pp_client-$count.y4m /tmp/pp_client-$count-resized.$format
   ##SvtAv1EncApp -i /tmp/pp_client-$count.y4m -b /tmp/pp_client-$count-resized.$format
 
 # PHOTO
