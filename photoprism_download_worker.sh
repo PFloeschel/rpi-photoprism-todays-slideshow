@@ -40,6 +40,9 @@ if [[ -z "$format" ]]; then
   avifenc -j all -p /tmp/pp_client-$count.y4m /tmp/pp_client-$count-resized.$format
   ##SvtAv1EncApp -i /tmp/pp_client-$count.y4m -b /tmp/pp_client-$count-resized.$format
 
+  #create smaller (960x540) video to play on rpi
+  ffmpeg -hide_banner -threads $THREAD_LIMIT -i /tmp/pp_client-$count -vf "scale='if(gte(a\,960/540)\,min(960\,iw)\,-2):if(gte(a\,960/540)\,-2\,min(540\,ih))'" -c:v libx264 -profile:v baseline -preset ultrafast -tune fastdecode,zerolatency -c:a copy movies/$image_date--$count.mp4
+
 # PHOTO
 else
   echo "$count : $format --> $image_format"
