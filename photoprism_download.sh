@@ -75,6 +75,7 @@ then
   length=$(printf "%03d" ${#images_dl[@]})
   logger -t pp_client "Starting $length images download and conversion"
 
+  #array starts at 0, so use -1
   #for i in {0..2}; do
   for i in ${!images_dl[@]}; do
     (
@@ -97,6 +98,7 @@ then
   if [ -n "$(ls -A movies)" ]; then
     cd movies
     for filename in *; do
+      echo "Uploading movie $filename"
       curl -s -S --ftp-create-dirs --limit-rate $ftp_limit -T $filename ftp://$ftp_user:$ftp_pw@$ftp_host/pp_pictures/$month/movies-$month$day/
     done
     cd ..
@@ -104,6 +106,7 @@ then
   if [ -n "$(ls -A images)" ]; then
     cd images
     for filename in *; do
+      echo "Uploading image $filename"
       curl -s -S --ftp-create-dirs --limit-rate $ftp_limit -T $filename ftp://$ftp_user:$ftp_pw@$ftp_host/pp_pictures/$month/images-$month$day/
     done
     cd ..
