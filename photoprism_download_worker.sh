@@ -36,12 +36,24 @@ if [[ -z "$format" ]]; then
   cp -f /tmp/pp_client-$count movies/$image_date--$count.$format
 
   format="mov.avif"
-  ffmpeg -hide_banner -threads $THREAD_LIMIT -t 10 -i /tmp/pp_client-$count -vf "scale='if(gte(a\,1920/1080)\,min(1920\,iw)\,-2):if(gte(a\,1920/1080)\,-2\,min(1080\,ih))'" -r 1 -f yuv4mpegpipe /tmp/pp_client-$count.y4m
+  ffmpeg -hide_banner -threads $THREAD_LIMIT -t 10 -i /tmp/pp_client-$count -vf "scale='if(gte(a\,1920/1080)\,min(1920\,iw)\,-2):if(gte(a\,1920/1080)\,-2\,min(1080\,ih))'" -r 1 -f yuv4mpegpipe -strict -1 /tmp/pp_client-$count.y4m
   avifenc -j all -p /tmp/pp_client-$count.y4m /tmp/pp_client-$count-resized.$format
   ##SvtAv1EncApp -i /tmp/pp_client-$count.y4m -b /tmp/pp_client-$count-resized.$format
 
   #create smaller (960x540) video to play on rpi
   ffmpeg -hide_banner -threads $THREAD_LIMIT -i /tmp/pp_client-$count -vf "scale='if(gte(a\,960/540)\,min(960\,iw)\,-2):if(gte(a\,960/540)\,-2\,min(540\,ih))'" -c:v libx264 -profile:v baseline -preset ultrafast -tune fastdecode,zerolatency -c:a copy movies/$image_date--$count.mp4
+
+
+# GIF
+elif  [[ "$format" == "gif" ]]; then
+  echo "$count : $format --> mov.avif"
+
+  cp -f /tmp/pp_client-$count movies/$image_date--$count.$format
+
+  format="mov.avif"
+  ffmpeg -hide_banner -threads $THREAD_LIMIT -t 10 -i /tmp/pp_client-$count -vf "scale='if(gte(a\,1920/1080)\,min(1920\,iw)\,-2):if(gte(a\,1920/1080)\,-2\,min(1080\,ih))'" -r 1 -f yuv4mpegpipe -strict -1 -pix_fmt yuva444p /tmp/pp_client-$count.y4m
+  avifenc -j all -p /tmp/pp_client-$count.y4m /tmp/pp_client-$count-resized.$format
+
 
 # PHOTO
 else
@@ -158,5 +170,5 @@ if [ "$filesize" -lt "1024" ]; then
   rm $filename
 fi
 
-echo -e "Finished download + conversion  $count / $length"
-logger -t pp_client "Finished download + conversion  $count / $length"
+echo -e "Finished download + conversion  $count / $length ($image_date)"
+logger -t pp_client "Finished download + conversion  $count / $length ($image_date)"
