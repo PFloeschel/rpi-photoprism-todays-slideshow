@@ -128,11 +128,11 @@ else
   curl -s -S --retry-all-errors --retry-delay 300 --retry 60 --limit-rate $ftp_limit ftp://$ftp_user:$ftp_pw@$ftp_host/pp_pictures/$month/images-$month$day/.finished
   # download all images
   echo "FTP is ready: start real downloading"
-  wget -q --limit-rate $ftp_limit ftp://$ftp_user:$ftp_pw@$ftp_host/pp_pictures/$month/images-$month$day/*
+  wget -nv --limit-rate $ftp_limit ftp://$ftp_user:$ftp_pw@$ftp_host/pp_pictures/$month/images-$month$day/*
   rm .finished
   cd ..
   cd movies
-  wget -q --limit-rate $ftp_limit ftp://$ftp_user:$ftp_pw@$ftp_host/pp_pictures/$month/movies-$month$day/*
+  wget -nv --limit-rate $ftp_limit ftp://$ftp_user:$ftp_pw@$ftp_host/pp_pictures/$month/movies-$month$day/*
   cd ..
   echo "Finished downloading from FTP"
   logger -t pp_client "Finished downloading from FTP"
