@@ -23,36 +23,36 @@ source photoprism_download_worker.env
 logger -t pp_client "Starting download + conversion  $count / $length"
 echo -e "\nDownloading $count / $length"
 
-curl -s -S --limit-rate $DL_LIMIT -o /tmp/pp_client-$count $base_url_dl$image_dl
+curl -s -S --limit-rate $DL_LIMIT -o /var/tmp/pp_client-$count $base_url_dl$image_dl
 
-format=$(identify -limit thread $THREAD_LIMIT -format '%m\n' /tmp/pp_client-$count  | tr '[:upper:]' '[:lower:]' | head -n1 )
+format=$(identify -limit thread $THREAD_LIMIT -format '%m\n' /var/tmp/pp_client-$count  | tr '[:upper:]' '[:lower:]' | head -n1 )
 
 # VIDEO
 if [[ -z "$format" ]]; then
-  format=$(ffprobe -threads $THREAD_LIMIT -hide_banner -show_format -print_format json /tmp/pp_client-$count | jq -r .format.format_name | cut -d, -f1)
+  format=$(ffprobe -threads $THREAD_LIMIT -hide_banner -show_format -print_format json /var/tmp/pp_client-$count | jq -r .format.format_name | cut -d, -f1)
   format=$(echo "${format//_pipe}")
   echo "$count : $format --> mov.avif"
 
-  cp -f /tmp/pp_client-$count movies/$image_date--$count.$format
+  cp -f /var/tmp/pp_client-$count movies/$image_date--$count.$format
 
   format="mov.avif"
-  ffmpeg -hide_banner -threads $THREAD_LIMIT -t 10 -i /tmp/pp_client-$count -vf "scale='if(gte(a\,1920/1080)\,min(1920\,iw)\,-2):if(gte(a\,1920/1080)\,-2\,min(1080\,ih))'" -r 1 -f yuv4mpegpipe -strict -1 /tmp/pp_client-$count.y4m
-  avifenc -j all -p /tmp/pp_client-$count.y4m /tmp/pp_client-$count-resized.$format
-  ##SvtAv1EncApp -i /tmp/pp_client-$count.y4m -b /tmp/pp_client-$count-resized.$format
+  ffmpeg -hide_banner -threads $THREAD_LIMIT -t 10 -i /var/tmp/pp_client-$count -vf "scale='if(gte(a\,1920/1080)\,min(1920\,iw)\,-2):if(gte(a\,1920/1080)\,-2\,min(1080\,ih))'" -r 1 -f yuv4mpegpipe -strict -1 /var/tmp/pp_client-$count.y4m
+  avifenc -j $THREAD_LIMIT -p /var/tmp/pp_client-$count.y4m /var/tmp/pp_client-$count-resized.$format
+  ##SvtAv1EncApp -i /var/tmp/pp_client-$count.y4m -b /var/tmp/pp_client-$count-resized.$format
 
   #create smaller (960x540) video to play on rpi
-  ffmpeg -hide_banner -threads $THREAD_LIMIT -i /tmp/pp_client-$count -vf "scale='if(gte(a\,960/540)\,min(960\,iw)\,-2):if(gte(a\,960/540)\,-2\,min(540\,ih))'" -c:v libx264 -profile:v baseline -preset ultrafast -tune fastdecode,zerolatency -c:a copy movies/$image_date--$count.mp4
+  ffmpeg -hide_banner -threads $THREAD_LIMIT -i /var/tmp/pp_client-$count -vf "scale='if(gte(a\,960/540)\,min(960\,iw)\,-2):if(gte(a\,960/540)\,-2\,min(540\,ih))'" -c:v libx264 -profile:v baseline -preset ultrafast -tune fastdecode,zerolatency -c:a copy movies/$image_date--$count.mp4
 
 
 # GIF
 elif  [[ "$format" == "gif" ]]; then
   echo "$count : $format --> mov.avif"
 
-  cp -f /tmp/pp_client-$count movies/$image_date--$count.$format
+  cp -f /var/tmp/pp_client-$count movies/$image_date--$count.$format
 
   format="mov.avif"
-  ffmpeg -hide_banner -threads $THREAD_LIMIT -t 10 -i /tmp/pp_client-$count -vf "scale='if(gte(a\,1920/1080)\,min(1920\,iw)\,-2):if(gte(a\,1920/1080)\,-2\,min(1080\,ih))'" -r 1 -f yuv4mpegpipe -strict -1 -pix_fmt yuva444p /tmp/pp_client-$count.y4m
-  avifenc -j all -p /tmp/pp_client-$count.y4m /tmp/pp_client-$count-resized.$format
+  ffmpeg -hide_banner -threads $THREAD_LIMIT -t 10 -i /var/tmp/pp_client-$count -vf "scale='if(gte(a\,1920/1080)\,min(1920\,iw)\,-2):if(gte(a\,1920/1080)\,-2\,min(1080\,ih))'" -r 1 -f yuv4mpegpipe -strict -1 -pix_fmt yuva444p /var/tmp/pp_client-$count.y4m
+  avifenc -j all -p /var/tmp/pp_client-$count.y4m /var/tmp/pp_client-$count-resized.$format
 
 
 # PHOTO
@@ -62,19 +62,19 @@ else
   case $image_format in
    # JPEG
    jpeg)
-     convert -limit thread $THREAD_LIMIT -adaptive-resize 1920x1080 -quality 100 /tmp/pp_client-$count /tmp/pp_client-$count-resized.$format
+     convert -limit thread $THREAD_LIMIT -adaptive-resize 1920x1080 -quality 100 /var/tmp/pp_client-$count /var/tmp/pp_client-$count-resized.$format
    ;;
    # HEIC
    heic)
-     convert -limit thread $THREAD_LIMIT -adaptive-resize 1920x1080 -quality 100 /tmp/pp_client-$count /tmp/pp_client-$count-resized.$format
+     convert -limit thread $THREAD_LIMIT -adaptive-resize 1920x1080 -quality 100 /var/tmp/pp_client-$count /var/tmp/pp_client-$count-resized.$format
    ;;
    # PNG
    png)
-     convert -limit thread $THREAD_LIMIT -adaptive-resize 1920x1080 /tmp/pp_client-$count /tmp/pp_client-$count-resized.$format
+     convert -limit thread $THREAD_LIMIT -adaptive-resize 1920x1080 /var/tmp/pp_client-$count /var/tmp/pp_client-$count-resized.$format
    ;;
    # AVIF
    avif)
-     convert -limit thread $THREAD_LIMIT -adaptive-resize 1920x1080 -quality 100 /tmp/pp_client-$count /tmp/pp_client-$count-resized.$format
+     convert -limit thread $THREAD_LIMIT -adaptive-resize 1920x1080 -quality 100 /var/tmp/pp_client-$count /var/tmp/pp_client-$count-resized.$format
    ;;
    # ILLEGAL
    *)
@@ -84,7 +84,7 @@ else
   esac
 
   # Simplify EXIF for viewing
-  filename="/tmp/pp_client-$count-resized.$format"
+  filename="/var/tmp/pp_client-$count-resized.$format"
   # simplify camera and exif data
   exiftool -EXIFIFD:all= $filename
   exiftool '-MODEL<$MAKE $MODEL' $filename
@@ -129,9 +129,9 @@ else
 
 fi
 
-# MOVE from /tmp
-mv -f /tmp/pp_client-$count-resized.$format images/$image_date--$count.$format
-rm /tmp/pp_client-$count*
+# MOVE from /var/tmp
+mv -f /var/tmp/pp_client-$count-resized.$format images/$image_date--$count.$format
+rm /var/tmp/pp_client-$count*
 
 # Get GPS maps
 if [ "$exif_lat" != null ] && [[ -n "$exif_lat" ]] ;
