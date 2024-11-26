@@ -1,6 +1,6 @@
 [Unit]
 Description=Scheduled PhotoPrism Download
-Conflicts=pp_client_img.service
+Conflicts=pp_client_img.service weston.service
 After=systemd-user-sessions.service
 
 [Install]
