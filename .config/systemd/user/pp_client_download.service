@@ -8,6 +8,7 @@ WantedBy=default.target
 
 [Service]
 Type=simple
+Nice=10
 WorkingDirectory=%h/pp_client
 ExecStart=%h/pp_client/photoprism_download.sh
 ExecStop=systemctl --user start pp_client_img
