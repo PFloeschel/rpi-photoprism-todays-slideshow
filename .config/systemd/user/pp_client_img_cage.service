@@ -1,0 +1,17 @@
+[Unit]
+Description=swayimg - Slideshow
+Documentation=man:swayimg(5)
+After=systemd-user-sessions.service cec.service sound.target
+
+[Install]
+WantedBy=default.target
+
+[Service]
+Type=exec
+EnvironmentFile=-%h/.config/swayimg/env
+WorkingDirectory=%h/pp_client/images
+ExecStart=/usr/bin/cage -d -- /usr/bin/swayimg -l
+Restart=on-failure
+RestartSec=10
+TimeoutStopSec=10
+SuccessExitStatus=ABRT

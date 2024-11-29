@@ -1,0 +1,9 @@
+# comment
+scale = optimal
+fullscreen = yes
+background = none
+window = none
+info = yes
+font = monospace 14
+font-color = #ffcc00
+sway = no
