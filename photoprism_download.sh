@@ -26,6 +26,10 @@ parallel_jobs=1
 # Read Credentials and Server config from env file
 source photoprism_download.env
 
+# Hack for imagemagick limit
+source photoprism_download_worker.env
+export MAGICK_THREAD_LIMIT=$THREAD_LIMIT
+
 #echo -e "$base_url\n$base_url_dl\n$username\n$password"
 
 # Current date

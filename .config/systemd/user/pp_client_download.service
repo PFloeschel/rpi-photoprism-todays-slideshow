@@ -1,6 +1,6 @@
 [Unit]
 Description=Scheduled PhotoPrism Download
-Conflicts=pp_client_img.service weston.service
+Conflicts=pp_client_img.service weston.service weston.socket
 After=systemd-user-sessions.service
 
 [Install]
@@ -9,6 +9,7 @@ WantedBy=default.target
 [Service]
 Type=simple
 Nice=10
+OOMScoreAdjust=-1000
 WorkingDirectory=%h/pp_client
 ExecStart=%h/pp_client/photoprism_download.sh
 ExecStop=systemctl --user start pp_client_img

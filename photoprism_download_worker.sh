@@ -24,7 +24,7 @@ export MAGICK_THREAD_LIMIT=$THREAD_LIMIT
 logger -t pp_client "Starting download + conversion  $count / $length"
 echo -e "\nDownloading $count / $length"
 
-curl -s -S --limit-rate $DL_LIMIT -o /var/tmp/pp_client-$count $base_url_dl$image_dl
+curl -s -S --retry 2 --limit-rate $DL_LIMIT -o /var/tmp/pp_client-$count $base_url_dl$image_dl
 
 format=$(identify -limit thread $THREAD_LIMIT -format '%m\n' /var/tmp/pp_client-$count  | tr '[:upper:]' '[:lower:]' | head -n1 )
 
