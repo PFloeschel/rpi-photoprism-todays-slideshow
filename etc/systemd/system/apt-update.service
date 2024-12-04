@@ -1,0 +1,14 @@
+[Unit]
+Description=APT Update Service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=apt update
+ExecStart=apt list --upgradable
+ExecStart=apt -y full-upgrade 
+ExecStart=apt -y autoremove
+
+[Install]
+WantedBy=default.target
