@@ -1,0 +1,12 @@
+[Unit]
+Description=Run APT update daily
+Requires=apt-update.service
+
+[Timer]
+OnCalendar=daily
+#OnCalendar=08:00
+#OnCalendar=20:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target
