@@ -10,6 +10,3 @@ ExecStart=apt list --upgradable
 ExecStart=apt -y full-upgrade 
 ExecStart=apt -y autoremove
 ExecStart=needrestart -m a -r a
-
-[Install]
-WantedBy=default.target

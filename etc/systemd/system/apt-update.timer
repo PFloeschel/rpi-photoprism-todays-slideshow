@@ -1,6 +1,5 @@
 [Unit]
 Description=Run APT update daily
-Requires=apt-update.service
 
 [Timer]
 #OnCalendar=daily
