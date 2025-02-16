@@ -167,13 +167,13 @@ if [ "$exif_lat" != null ] && [[ -n "$exif_lat" ]] ;
     pos="$exif_lon,%20$exif_lat"
     pins="default%7CcoFF0000%7C%7C$exif_lon%20$exif_lat"
     curl -s -S --limit-rate $DL_LIMIT --header "Accept-Language:de-DE" \
-      "https://atlas.microsoft.com/map/static?subscription-key=$API_KEY_AZURE&api-version=2024-04-01&tilesetId=microsoft.imagery.hybrid&zoom=10&center=$pos&height=1080&width=1920&language=de-DE&pins=$pins" \
+      "https://atlas.microsoft.com/map/static?subscription-key=$API_KEY_AZURE&api-version=2024-04-01&tilesetId=microsoft.imagery.hybrid&zoom=10&center=$pos&height=1080&width=1920&language=NGT-Latn&pins=$pins" \
       -o "images/$image_date--$count.map1.png"
     curl -s -S --limit-rate $DL_LIMIT --header "Accept-Language:de-DE" \
-      "https://atlas.microsoft.com/map/static?subscription-key=$API_KEY_AZURE&api-version=2024-04-01&tilesetId=microsoft.imagery.hybrid&zoom=14&center=$pos&height=1080&width=1920&language=de-DE&pins=$pins" \
+      "https://atlas.microsoft.com/map/static?subscription-key=$API_KEY_AZURE&api-version=2024-04-01&tilesetId=microsoft.imagery.hybrid&zoom=14&center=$pos&height=1080&width=1920&language=NGT-Latn&pins=$pins" \
       -o "images/$image_date--$count.map2.png"
     curl -s -S --limit-rate $DL_LIMIT --header "Accept-Language:de-DE" \
-      "https://atlas.microsoft.com/map/static?subscription-key=$API_KEY_AZURE&api-version=2024-04-01&tilesetId=microsoft.imagery.hybrid&zoom=17&center=$pos&height=1080&width=1920&language=de-DE&pins=$pins" \
+      "https://atlas.microsoft.com/map/static?subscription-key=$API_KEY_AZURE&api-version=2024-04-01&tilesetId=microsoft.imagery.hybrid&zoom=17&center=$pos&height=1080&width=1920&language=NGT-Latn&pins=$pins" \
       -o "images/$image_date--$count.map3.png"
 
   convert -limit thread $THREAD_LIMIT -quality 100 images/$image_date--$count.map1.png images/$image_date--$count.map1.avif
