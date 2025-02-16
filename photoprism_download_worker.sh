@@ -12,6 +12,7 @@ image_weekday=$(date +"%A" -d $image_date)
 # ":" is not a valid smb char, replace with "_"
 image_date=$(echo "$image_date" |tr ":" "_")
 
+API_KEY_AZURE=
 API_KEY_BING=
 API_KEY_LOCIQ=
 DL_LIMIT=
@@ -111,14 +112,18 @@ else
     #   geo_resp=$(curl -s -S --request GET --limit-rate $DL_LIMIT \
     #     --url "https://eu1.locationiq.com/v1/reverse?lat=$exif_lat&lon=$exif_lon&normalizeaddress=1&addressdetails=1&format=json&accept-language=en&key=$>
     #     --header 'accept: application/json')
-    #   #echo $geo_resp | jq .
     #   geo_loc=$(echo "$geo_resp" | jq -r '.address | .road + ", " + .city + ", " + .country')
 
     # BingMaps
-    geo_resp=$(curl -s -S --limit-rate $DL_LIMIT \
-       "http://dev.virtualearth.net/REST/v1/Locations/$exif_lat,$exif_lon?key=$API_KEY_BING" )
-    #echo $geo_resp | jq .
-    geo_loc=$(echo "$geo_resp" | jq -r .resourceSets.[].resources[].name)
+    #geo_resp=$(curl -s -S --limit-rate $DL_LIMIT \
+    #   "http://dev.virtualearth.net/REST/v1/Locations/$exif_lat,$exif_lon?key=$API_KEY_BING" )
+    #geo_loc=$(echo "$geo_resp" | jq -r .resourceSets.[].resources[].name)
+    #geo_loc=$(echo "$geo_loc, $exif_alt")
+
+    #Azure Maps
+    geo_resp=$(curl -s -S --limit-rate $DL_LIMIT --header "Accept-Language:de-DE" \
+       "https://atlas.microsoft.com/reverseGeocode?subscription-key=$API_KEY_AZURE&api-version=2023-06-01&coordinates=$exif_lon,%20$exif_lat&view=DE")
+    geo_loc=$(echo "$geo_resp" | jq -r .features.[].properties.address.formattedAddress)
     geo_loc=$(echo "$geo_loc, $exif_alt")
 
     echo "$count : $geo_loc"
@@ -148,14 +153,27 @@ if [ "$exif_lat" != null ] && [[ -n "$exif_lat" ]] ;
   #    -o "images/$image_date--$count.map2.png"
 
   # BingMaps
-    curl -s -S --limit-rate $DL_LIMIT \
-      "https://dev.virtualearth.net/REST/v1/Imagery/Map/AerialWithLabels?mS=1920,1080&dpi=Large&fmt=png&pp=$exif_lat,$exif_lon;46&zoomLevel=11&key=$API_KEY_BING" \
+  #  curl -s -S --limit-rate $DL_LIMIT \
+  #    "https://dev.virtualearth.net/REST/v1/Imagery/Map/AerialWithLabels?mS=1920,1080&dpi=Large&fmt=png&pp=$exif_lat,$exif_lon;46&zoomLevel=11&key=$API_KEY_BING" \
+  #    -o "images/$image_date--$count.map1.png"
+  #  curl -s -S --limit-rate $DL_LIMIT \
+  #    "https://dev.virtualearth.net/REST/v1/Imagery/Map/AerialWithLabels?mS=1920,1080&dpi=Large&fmt=png&pp=$exif_lat,$exif_lon;46&zoomLevel=15&key=$API_KEY_BING" \
+  #    -o "images/$image_date--$count.map2.png"
+  #  curl -s -S --limit-rate $DL_LIMIT \
+  #    "https://dev.virtualearth.net/REST/v1/Imagery/Map/AerialWithLabels?mS=1920,1080&dpi=Large&fmt=png&pp=$exif_lat,$exif_lon;46&zoomLevel=18&key=$API_KEY_BING" \
+  #    -o "images/$image_date--$count.map3.png"
+
+  # AzureMaps
+    pos="$exif_lon,%20$exif_lat"
+    pins="default%7CcoFF0000%7C%7C$exif_lon%20$exif_lat"
+    curl -s -S --limit-rate $DL_LIMIT --header "Accept-Language:de-DE" \
+      "https://atlas.microsoft.com/map/static?subscription-key=$API_KEY_AZURE&api-version=2024-04-01&tilesetId=microsoft.imagery.hybrid&zoom=10&center=$pos&height=1080&width=1920&language=de-DE&pins=$pins" \
       -o "images/$image_date--$count.map1.png"
-    curl -s -S --limit-rate $DL_LIMIT \
-      "https://dev.virtualearth.net/REST/v1/Imagery/Map/AerialWithLabels?mS=1920,1080&dpi=Large&fmt=png&pp=$exif_lat,$exif_lon;46&zoomLevel=15&key=$API_KEY_BING" \
+    curl -s -S --limit-rate $DL_LIMIT --header "Accept-Language:de-DE" \
+      "https://atlas.microsoft.com/map/static?subscription-key=$API_KEY_AZURE&api-version=2024-04-01&tilesetId=microsoft.imagery.hybrid&zoom=14&center=$pos&height=1080&width=1920&language=de-DE&pins=$pins" \
       -o "images/$image_date--$count.map2.png"
-    curl -s -S --limit-rate $DL_LIMIT \
-      "https://dev.virtualearth.net/REST/v1/Imagery/Map/AerialWithLabels?mS=1920,1080&dpi=Large&fmt=png&pp=$exif_lat,$exif_lon;46&zoomLevel=18&key=$API_KEY_BING" \
+    curl -s -S --limit-rate $DL_LIMIT --header "Accept-Language:de-DE" \
+      "https://atlas.microsoft.com/map/static?subscription-key=$API_KEY_AZURE&api-version=2024-04-01&tilesetId=microsoft.imagery.hybrid&zoom=17&center=$pos&height=1080&width=1920&language=de-DE&pins=$pins" \
       -o "images/$image_date--$count.map3.png"
 
   convert -limit thread $THREAD_LIMIT -quality 100 images/$image_date--$count.map1.png images/$image_date--$count.map1.avif
