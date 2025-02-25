@@ -53,9 +53,9 @@ mkdir -p images
 mkdir -p movies
 
 # Remove previous files
-yesterday=$(date -d "yesterday 13:00" '+%m-%d')
-rm -f images/*$yesterday*
-rm -f movies/*$yesterday*
+# yesterday=$(date -d "yesterday 13:00" '+%m-%d')
+rm -f images/*
+rm -f movies/*
 
 
 if (( $primary_proc ))
@@ -70,6 +70,11 @@ then
   #images=$(curl -s $base_url"/api/v1/photos/view?count=720&offset=0&merged=true&country=&camera=2&lens=0&label=&year=0&month=0&color=&order=newest&q=&public=tr>
   images=$(curl -s $base_url"/api/v1/photos/view?count=9999&year=&month=$month&day=$day&order=oldest" \
     -H "X-Session-ID: "$session_id)
+  if [ "$day" == "28" ] && [ "$month" == "02" ]
+  then
+    images+=$(curl -s $base_url"/api/v1/photos/view?count=9999&year=&month=$month&day=29&order=oldest" \
+      -H "X-Session-ID: "$session_id)
+  fi
 
   # Prepare Images download
   images_dl+=($(echo $images | jq -r ".[].DownloadUrl"))
