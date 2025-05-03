@@ -13,7 +13,7 @@ image_weekday=$(date +"%A" -d $image_date)
 image_date=$(echo "$image_date" |tr ":" "_")
 
 API_KEY_AZURE=
-API_KEY_BING=
+API_KEY_GOOGLE=
 API_KEY_LOCIQ=
 DL_LIMIT=
 THREAD_LIMIT=
@@ -114,16 +114,16 @@ else
     #     --header 'accept: application/json')
     #   geo_loc=$(echo "$geo_resp" | jq -r '.address | .road + ", " + .city + ", " + .country')
 
-    # BingMaps
-    #geo_resp=$(curl -s -S --limit-rate $DL_LIMIT \
-    #   "http://dev.virtualearth.net/REST/v1/Locations/$exif_lat,$exif_lon?key=$API_KEY_BING" )
-    #geo_loc=$(echo "$geo_resp" | jq -r .resourceSets.[].resources[].name)
+    #Azure Maps
+    #geo_resp=$(curl -s -S --limit-rate $DL_LIMIT --header "Accept-Language:de-DE" \
+    #   "https://atlas.microsoft.com/reverseGeocode?subscription-key=$API_KEY_AZURE&api-version=2023-06-01&coordinates=$exif_lon,%20$exif_lat&view=DE")
+    #geo_loc=$(echo "$geo_resp" | jq -r .features.[].properties.address.formattedAddress)
     #geo_loc=$(echo "$geo_loc, $exif_alt")
 
-    #Azure Maps
+    #Google Maps
     geo_resp=$(curl -s -S --limit-rate $DL_LIMIT --header "Accept-Language:de-DE" \
-       "https://atlas.microsoft.com/reverseGeocode?subscription-key=$API_KEY_AZURE&api-version=2023-06-01&coordinates=$exif_lon,%20$exif_lat&view=DE")
-    geo_loc=$(echo "$geo_resp" | jq -r .features.[].properties.address.formattedAddress)
+       "https://maps.googleapis.com/maps/api/geocode/json?latlng=$exif_lat,$exif_lon&region=DE&language=de&key=$API_KEY_GOOGLE")
+    geo_loc=$(echo "$geo_resp" | jq -r .results[0].formatted_address)
     geo_loc=$(echo "$geo_loc, $exif_alt")
 
     echo "$count : $geo_loc"
@@ -152,28 +152,31 @@ if [ "$exif_lat" != null ] && [[ -n "$exif_lat" ]] ;
   #    "https://maps.locationiq.com/v3/staticmap?size=960x540&scale=2&markers=icon:small-red-cutout|$exif_lat,$exif_lon&zoom=16&key=$API_KEY_LOCIQ" \
   #    -o "images/$image_date--$count.map2.png"
 
-  # BingMaps
-  #  curl -s -S --limit-rate $DL_LIMIT \
-  #    "https://dev.virtualearth.net/REST/v1/Imagery/Map/AerialWithLabels?mS=1920,1080&dpi=Large&fmt=png&pp=$exif_lat,$exif_lon;46&zoomLevel=11&key=$API_KEY_BING" \
+  # AzureMaps
+  #  pos="$exif_lon,%20$exif_lat"
+  #  pins="default%7CcoFF0000%7C%7C$exif_lon%20$exif_lat"
+  #  curl -s -S --limit-rate $DL_LIMIT --header "Accept-Language:de-DE" \
+  #    "https://atlas.microsoft.com/map/static?subscription-key=$API_KEY_AZURE&api-version=2024-04-01&tilesetId=microsoft.imagery.hybrid&zoom=10&center=$pos&height=1080&width=1920&language=NGT-Latn&pins=$pins" \
   #    -o "images/$image_date--$count.map1.png"
-  #  curl -s -S --limit-rate $DL_LIMIT \
-  #    "https://dev.virtualearth.net/REST/v1/Imagery/Map/AerialWithLabels?mS=1920,1080&dpi=Large&fmt=png&pp=$exif_lat,$exif_lon;46&zoomLevel=15&key=$API_KEY_BING" \
+  #  curl -s -S --limit-rate $DL_LIMIT --header "Accept-Language:de-DE" \
+  #    "https://atlas.microsoft.com/map/static?subscription-key=$API_KEY_AZURE&api-version=2024-04-01&tilesetId=microsoft.imagery.hybrid&zoom=14&center=$pos&height=1080&width=1920&language=NGT-Latn&pins=$pins" \
   #    -o "images/$image_date--$count.map2.png"
-  #  curl -s -S --limit-rate $DL_LIMIT \
-  #    "https://dev.virtualearth.net/REST/v1/Imagery/Map/AerialWithLabels?mS=1920,1080&dpi=Large&fmt=png&pp=$exif_lat,$exif_lon;46&zoomLevel=18&key=$API_KEY_BING" \
+  #  curl -s -S --limit-rate $DL_LIMIT --header "Accept-Language:de-DE" \
+  #    "https://atlas.microsoft.com/map/static?subscription-key=$API_KEY_AZURE&api-version=2024-04-01&tilesetId=microsoft.imagery.hybrid&zoom=17&center=$pos&height=1080&width=1920&language=NGT-Latn&pins=$pins" \
   #    -o "images/$image_date--$count.map3.png"
 
-  # AzureMaps
-    pos="$exif_lon,%20$exif_lat"
-    pins="default%7CcoFF0000%7C%7C$exif_lon%20$exif_lat"
+  # GoogleMaps
+  # "https://maps.googleapis.com/maps/api/staticmap?center=47.9687164313557,12.598614476990706&markers=size:small|color:orange|47.9687164313557,12.598614476990706&zoom=10&size=640x540&scale=2&maptype=hybrid&format=png32&key="
+    pos="$exif_lat,$exif_lon"
+    pins="size:small%7Ccolor:orange%7C$pos"
     curl -s -S --limit-rate $DL_LIMIT --header "Accept-Language:de-DE" \
-      "https://atlas.microsoft.com/map/static?subscription-key=$API_KEY_AZURE&api-version=2024-04-01&tilesetId=microsoft.imagery.hybrid&zoom=10&center=$pos&height=1080&width=1920&language=NGT-Latn&pins=$pins" \
+      "https://maps.googleapis.com/maps/api/staticmap?center=$pos&markers=$pins&zoom=10&size=640x540&scale=2&maptype=hybrid&format=png32&region=DE&language=de&key=$API_KEY_GOOGLE" \
       -o "images/$image_date--$count.map1.png"
     curl -s -S --limit-rate $DL_LIMIT --header "Accept-Language:de-DE" \
-      "https://atlas.microsoft.com/map/static?subscription-key=$API_KEY_AZURE&api-version=2024-04-01&tilesetId=microsoft.imagery.hybrid&zoom=14&center=$pos&height=1080&width=1920&language=NGT-Latn&pins=$pins" \
+      "https://maps.googleapis.com/maps/api/staticmap?center=$pos&markers=$pins&zoom=14&size=640x540&scale=2&maptype=hybrid&format=png322&region=DE&language=de&key=$API_KEY_GOOGLE" \
       -o "images/$image_date--$count.map2.png"
     curl -s -S --limit-rate $DL_LIMIT --header "Accept-Language:de-DE" \
-      "https://atlas.microsoft.com/map/static?subscription-key=$API_KEY_AZURE&api-version=2024-04-01&tilesetId=microsoft.imagery.hybrid&zoom=17&center=$pos&height=1080&width=1920&language=NGT-Latn&pins=$pins" \
+      "https://maps.googleapis.com/maps/api/staticmap?center=$pos&markers=$pins&zoom=17&size=640x540&scale=2&maptype=hybrid&format=png322&region=DE&language=de&key=$API_KEY_GOOGLE" \
       -o "images/$image_date--$count.map3.png"
 
   convert -limit thread $THREAD_LIMIT -quality 100 images/$image_date--$count.map1.png images/$image_date--$count.map1.avif
