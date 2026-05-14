@@ -169,20 +169,20 @@ if [ "$exif_lat" != null ] && [[ -n "$exif_lat" ]] ;
   # "https://maps.googleapis.com/maps/api/staticmap?center=47.9687164313557,12.598614476990706&markers=size:small|color:orange|47.9687164313557,12.598614476990706&zoom=10&size=640x540&scale=2&maptype=hybrid&format=png32&key="
     pos="$exif_lat,$exif_lon"
     pins="size:small%7Ccolor:orange%7C$pos"
-    curl -s -S --limit-rate $DL_LIMIT --header "Accept-Language:de-DE" \
-      "https://maps.googleapis.com/maps/api/staticmap?center=$pos&markers=$pins&zoom=10&size=640x540&scale=2&maptype=hybrid&format=png32&region=DE&language=de&key=$API_KEY_GOOGLE" \
-      -o "images/$image_date--$count.map1.png"
-    curl -s -S --limit-rate $DL_LIMIT --header "Accept-Language:de-DE" \
-      "https://maps.googleapis.com/maps/api/staticmap?center=$pos&markers=$pins&zoom=14&size=640x540&scale=2&maptype=hybrid&format=png322&region=DE&language=de&key=$API_KEY_GOOGLE" \
-      -o "images/$image_date--$count.map2.png"
-    curl -s -S --limit-rate $DL_LIMIT --header "Accept-Language:de-DE" \
-      "https://maps.googleapis.com/maps/api/staticmap?center=$pos&markers=$pins&zoom=17&size=640x540&scale=2&maptype=hybrid&format=png322&region=DE&language=de&key=$API_KEY_GOOGLE" \
-      -o "images/$image_date--$count.map3.png"
+#    curl -s -S --limit-rate $DL_LIMIT --header "Accept-Language:de-DE" \
+#      "https://maps.googleapis.com/maps/api/staticmap?center=$pos&markers=$pins&zoom=10&size=640x540&scale=2&maptype=hybrid&format=png32&region=DE&language=de&key=$API_KEY_GOOGLE" \
+#      -o "images/$image_date--$count.map1.png"
+#    curl -s -S --limit-rate $DL_LIMIT --header "Accept-Language:de-DE" \
+#      "https://maps.googleapis.com/maps/api/staticmap?center=$pos&markers=$pins&zoom=14&size=640x540&scale=2&maptype=hybrid&format=png322&region=DE&language=de&key=$API_KEY_GOOGLE" \
+#      -o "images/$image_date--$count.map2.png"
+#    curl -s -S --limit-rate $DL_LIMIT --header "Accept-Language:de-DE" \
+#      "https://maps.googleapis.com/maps/api/staticmap?center=$pos&markers=$pins&zoom=17&size=640x540&scale=2&maptype=hybrid&format=png322&region=DE&language=de&key=$API_KEY_GOOGLE" \
+#      -o "images/$image_date--$count.map3.png"
 
-  convert -limit thread $THREAD_LIMIT -quality 100 images/$image_date--$count.map1.png images/$image_date--$count.map1.avif
-  convert -limit thread $THREAD_LIMIT -quality 100 images/$image_date--$count.map2.png images/$image_date--$count.map2.avif
-  convert -limit thread $THREAD_LIMIT -quality 100 images/$image_date--$count.map3.png images/$image_date--$count.map3.avif
-  rm images/$image_date--$count.map?.png
+#  convert -limit thread $THREAD_LIMIT -quality 100 images/$image_date--$count.map1.png images/$image_date--$count.map1.avif
+#  convert -limit thread $THREAD_LIMIT -quality 100 images/$image_date--$count.map2.png images/$image_date--$count.map2.avif
+#  convert -limit thread $THREAD_LIMIT -quality 100 images/$image_date--$count.map3.png images/$image_date--$count.map3.avif
+#  rm images/$image_date--$count.map?.png
 fi
 
 # Remove files smaller 1024 bytes - cannot be interesting images

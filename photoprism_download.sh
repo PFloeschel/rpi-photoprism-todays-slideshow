@@ -126,6 +126,7 @@ then
 
   echo "Finished $length images download, conversion and upload"
   logger -t pp_client "Finished $length images download, conversion and upload"
+  npx mudslide@latest send me "$day.$month: $length images"
 
 #Secondary processor
 else
